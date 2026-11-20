@@ -1,11 +1,18 @@
-﻿// MandelbrotPararel.cpp : Defines the entry point for the application.
-//
+﻿#include <iostream>
+#include <omp.h>
 
-#include <iostream>
+int main() {
+#ifdef _OPENMP
+    std::cout << "OpenMP enabled! _OPENMP = " << _OPENMP << "\n";
+    std::cout << "Max threads available: " << omp_get_max_threads() << "\n";
 
-
-int main()
-{
-	std::cout << "Hello CMake." << std::endl;
-	return 0;
+#pragma omp parallel
+    {
+#pragma omp critical
+        std::cout << "Hello from thread " << omp_get_thread_num() << "\n";
+    }
+#else
+    std::cout << "OpenMP is NOT enabled (_OPENMP is not defined).\n";
+#endif
+    return 0;
 }
